@@ -8,6 +8,8 @@ from requests import get
 from requests.exceptions import ConnectionError
 from http import client
 import urllib2
+import socks
+import socket
 
 
 def printError(msg, exit = False):
@@ -180,9 +182,181 @@ Recibe:
 Un archivo para escritura
 Regresa:
 una archivo txt.
-"""	
+"""
+	try:       
+      
+    if opts.reporte:
+            r = reportResults()
+            if r == 1:
+                print "\nLa fecha de ejecucion del programa es: "+ str("FECHA: " + datetime.now()) + "\nIP: " + opts.server)
+                opts.verbose=True
+            elif r==2:
+                reporte.write("\nFECHA "+ str(datetime.now()) + "\nIP: " + opts.server)
+            elif r==3:
+                print "\nFECHA: "+ str(datetime.now()) + "\nIP: " + opts.server)
+                opts.verbose=True
+                reporte.write("\nFECHA "+ str(datetime.now()) + "\nIP: " + opts.server)        	
+        if opts.archivo:
+        	opts=lee_configuracion(opts)
+        if opts.cms:
+        	f1=open('archivo.txt','w')
+        	f1.write(gethtml(url))
+        	f1.close()
+        	f1=open('archivo.txt','r')
+        	cont=0
+        	for a in f1.readlines():
+        		if opts.verbose:
+        			print a
+        		var = re.findall('<name=\"genor\" content=\".*\"',a)
+        		if var!= []:
+        			cont=1
+        			if opts.reporte:
+        				reporte.write("CMS: " + var[0].split(">")[0].split("\"")[3] + "\n")
+        			print "El cms es: " + var[0].split(">")[0].split("\"")[3] + "\n"
+        	if(cont==0):
+        		print "No hay CMS" + "\n"
+        	f1.close()
+        if opts.metodos:
+        	try:
+        		if opts.reporte:
+        			reporte.write("Metodos http: " + requests.options(url).headers['allow'] + "\n")
+        		print "Metodos http: " + requests.options(url).headers['allow'] + "\n"
+        	except Exception as e:
+        		print "No hay metodos" + "\n"
+        if opts.serverversion:
+        	if opts.reporte:
+        		reporte.write("URL del servidor:" + opts.serverversion  + "\n")
+        	print "URL de servidor:" + opts.server  + "\n"
+        if opts.busqueda:
+        	implementar_busqueda(opts,url)
+        if opts.tor:
+        	if opts.user:
+        		if opts.password:
+        			peticion_tor(opts,url)
+        		else:
+        			print "Especifique contraseña y usuario para usar tor"
+        	else:
+        		print "Especifique contraseña y usuario para usar tor" + "\n"
+        if opts.correo:
+        	f1=open('archivo.txt','w')
+        	f1.write(gethtml(url))
+        	f1.close()
+        	f1=open('archivo.txt','r')
+        	cont=0
+        	for a in f1.readlines():
+        		if opts.verbose:
+        			print a
+        		var = re.findall('[a-zA-Z_\.]+@[a-zA-Z\.]+',a)
+        		if var!= []:
+	        		if opts.reporte:
+	        			reporte.write("Correo: " + var[0] + "\n")
+        			cont=1
+        			print "Correo: " + var[0] + "\n"
+        	if(cont==0):
+        		print "No hay correos" + "\n"
+        	f1.close()
+        if opts.cabeceras:
+        	try:
+        		if opts.reporte:
+        			reporte.write("Version Servidor: " + get(url).headers['server'] + "\n")
+        		print "Version Servidor: " + get(url).headers['server'] + "\n"
+        	except Exception as e:
+        		print "No se encuentra la version del servidor" + "\n"
+        	try:
+        		if opts.reporte:
+        			reporte.write("Version PHP: " + get(url).headers['x-powered-by'] + "\n")
+        		print "Version PHP: " + get(url).headers['x-powered-by'] + "\n"
+        	except Exception as e:
+        		print "No se encuentra version de PHP" + "\n"
+    except Exception as e:
+        printError('Error en reportes')
+reporte.close()
+
+
+
+def makeRequest(host, user, password):
+    """
+  Valida Credenciales 
+    """
+    try:
+    	response = get(host, auth=(user,password))
+    	if response.status_code == 200:
+    	    print 'CREDENCIALES ENCONTRADAS: %s\t%s' % (user,password)
+            archivo=open('archivo2.txt','w')
+            archivo.write(user+','+password)
+            archivo.close()
+            return True
+    	else:
+    	    print 'NO FUNCIONO :c '
+            return False
+    except ConnectionError:
+        printError('Error en la conexion, tal vez el servidor no esta arriba.',True)
 
 def implementa_modo_verboso():
 """
 """
+
+def agente(opts):
+    """
+    Modifica el nombre de agente  
+   
+    """
+    try:
+    	f1=open(opts.agente,'r')
+    	for a in f1.readlines():
+    		primer_valor = a[:-1].split('=')[0]
+    		segundo_valor = a[:-1].split('=')[1]
+    		if opts.verbose:
+    			print primer_valor
+    			print segundo_valor
+    		if re.match('agente',primer_valor):
+    			if opts.report:
+    				write("Agente" + segundo_valor)
+    			return segundo_valor
+    	f1.close()	
+    except Exception as e:
+printError('Error en Agente')
+
 def envia_peticiones_tor():
+"""
+"""
+	i=0
+	try:
+		if options.tor != None:
+        		print '\n  Tor se esta utilizando'
+        		socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 9050)
+        		socket.socket = socks.socksocket
+   			l = urllib2.build_opener()
+            		if opts.agent:
+                		agente= agente(opts)
+               			 if opts.verbose:
+                		        print agente
+                			l.addheaders = [('Agente', agente)]
+            			else:
+                			l.addheaders = [('Agente', 'Cabecera')]
+            				l.open(url)
+          			  if opts.report:
+            				write("Se esta realizando la peticion "+url+opts.upser+opts.password)
+          			        makeRequest(url, opts.user, opts.password) 
+					i+=1
+		elif options.tor == None:
+          	         socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 9050)
+           		 socket.socket = socks.socksocket 
+            		 l = urllib2.build_opener()
+           		 if opts.agente:
+               	 		agente= agente(opts)
+               			 if opts.verbose:
+                   			 print agente
+                			l.addheaders = [('Agente', agente)]
+          			  else:
+                			l.addheaders = [('Agente', 'Cabecera')]
+            				l.open(url)
+          			        f2= open(opts.password,'r')
+           			        for lines in f2.readlines():
+              					  if opts.verbose:
+                    					print lines
+                					password = lines[:-1]
+                						if opts.report:
+                  						  write("Haciendo Peticion "+url+opts.upser+password)
+               							  makeRequest(url, opts.user, password)
+							f2.close()
