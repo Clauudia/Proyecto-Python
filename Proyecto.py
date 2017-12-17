@@ -60,33 +60,46 @@ UN archivo de texto
 			elif (opcion == "tor" or opcion == "t"):
 				phpversion.default = (x: if x == True then x)
 
-def obten_version_servidor(url):
+def obten_version_servidor(options,host,user):
 """ 
 Función para obtener la versión del servidor web
 Recibe:
-La url a analizar
+Las opciones, el host y el usuario
 Regresa:
 La version del servidor web
 """
-	conexion = client.HTTPConnection(url)
-	conexion.request("GET",)
-	respuesta = conexion.getresponse()
-	for linea in respuesta.readlines():
-		if 
+    if options.web_v != None:
+        try:
+            ver=get(host,headers=user)
+            try:
+                ver2=ver.headers['server']
+                print "Version del servidor web:",ver2
+            except:
+                print "No está disponible la version web"
+        except ConnectionError:
+            print('Error en la conexion para obtener la version web')
+    else:
+        pass
 
-def obten_version_php(url):
+def obten_version_php(options,host,user):
 """ 
 Función para obtener la versión de php
 Recibe:
-La url a analizar
+La opción, el hsot y el usuario
 Regresa:
 La version de php
 """
-	conexion = client.HTTPConnection(url)
-	conexion.request("GET",)
-	respuesta = conexion.getresponse()
-	for linea in respuesta.readlines():
-		if 
+   if options.phpversion != None:
+        try:
+            ver=get(host,headers=user)
+            try:
+                ver2=ver.headers['x-powered-by']
+                print "Version de PHP:",ver2
+            except:
+                print('No está disponible la versión de PHP')
+        except ConnectionError:
+            print('Error en la conexion para obtener la version de php')
+
 def determina_metodos(url):
 """
 Función para determinar los métodos http habilitados en el servidor
@@ -101,7 +114,7 @@ una lista con los métodos habilitados
 	for linea in respuesta.readlines():
 		if 
 
-def obtener_cms(url):
+def obtener_cms(options, host, user):
 """
 Función para determinar los métodos http habilitados en el servidor
 Recibe:
@@ -115,7 +128,7 @@ una lista con los métodos habilitados
 	for linea in respuesta.readlines():
 		if 
 
-def extraer_correos(url):
+def extraer_correos(options, host, user):
 """
 Función para extraer correos del servidor
 Recibe:
@@ -129,7 +142,7 @@ una lista con los correos encontrados.
 	for linea in respuesta.readlines():
 		if 
 
-def buscar_archivos(url):
+def buscar_archivos(options, host, user):
 """
 Función para extraer correos del servidor
 Recibe:
