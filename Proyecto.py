@@ -183,96 +183,93 @@ Un archivo para escritura
 Regresa:
 una archivo txt.
 """
-	try:       
-      
+	try:          
     if opts.reporte:
-            r = reportResults()
-            if r == 1:
-                print "\nLa fecha de ejecucion del programa es: "+ str("FECHA: " + datetime.now()) + "\nIP: " + opts.server)
-                opts.verbose=True
-            elif r==2:
-                reporte.write("\nFECHA "+ str(datetime.now()) + "\nIP: " + opts.server)
-            elif r==3:
-                print "\nFECHA: "+ str(datetime.now()) + "\nIP: " + opts.server)
-                opts.verbose=True
-                reporte.write("\nFECHA "+ str(datetime.now()) + "\nIP: " + opts.server)        	
-        if opts.archivo:
-        	opts=lee_configuracion(opts)
-        if opts.cms:
-        	f1=open('archivo.txt','w')
-        	f1.write(gethtml(url))
-        	f1.close()
-        	f1=open('archivo.txt','r')
-        	cont=0
-        	for a in f1.readlines():
-        		if opts.verbose:
-        			print a
-        		var = re.findall('<name=\"genor\" content=\".*\"',a)
-        		if var!= []:
-        			cont=1
-        			if opts.reporte:
-        				reporte.write("CMS: " + var[0].split(">")[0].split("\"")[3] + "\n")
-        			print "El cms es: " + var[0].split(">")[0].split("\"")[3] + "\n"
-        	if(cont==0):
-        		print "No hay CMS" + "\n"
-        	f1.close()
-        if opts.metodos:
-        	try:
+        r = reportResults()
+        if r == 1:
+            print "\nLa fecha de ejecucion del programa es: "+ str("FECHA: " + datetime.now()) + "\nIP: " + opts.server)
+            opts.verbose=True
+        elif r==2:
+            reporte.write("\nFECHA "+ str(datetime.now()) + "\nIP: " + opts.server)
+        elif r==3:
+            print "\nFECHA: "+ str(datetime.now()) + "\nIP: " + opts.server)
+            opts.verbose=True
+            reporte.write("\nFECHA "+ str(datetime.now()) + "\nIP: " + opts.server)        	
+    if opts.archivo:
+        opts=lee_configuracion(opts)
+    if opts.cms:
+        f1=open('archivo.txt','w')
+        f1.write(gethtml(url))
+        f1.close()
+        f1=open('archivo.txt','r')
+        cont=0
+        for a in f1.readlines():
+        	if opts.verbose:
+        		print a
+        	var = re.findall('<name=\"genor\" content=\".*\"',a)
+        	if var!= []:
+        		cont=1
         		if opts.reporte:
-        			reporte.write("Metodos http: " + requests.options(url).headers['allow'] + "\n")
-        		print "Metodos http: " + requests.options(url).headers['allow'] + "\n"
-        	except Exception as e:
-        		print "No hay metodos" + "\n"
-        if opts.serverversion:
+        			reporte.write("CMS: " + var[0].split(">")[0].split("\"")[3] + "\n")
+        		print "El cms es: " + var[0].split(">")[0].split("\"")[3] + "\n"
+        if(cont==0):
+        	print "No hay CMS" + "\n"
+        f1.close()
+    if opts.metodos:
+        try:
         	if opts.reporte:
-        		reporte.write("URL del servidor:" + opts.serverversion  + "\n")
-        	print "URL de servidor:" + opts.server  + "\n"
-        if opts.busqueda:
-        	implementar_busqueda(opts,url)
-        if opts.tor:
-        	if opts.user:
-        		if opts.password:
-        			peticion_tor(opts,url)
-        		else:
-        			print "Especifique contraseña y usuario para usar tor"
+        		reporte.write("Metodos http: " + requests.options(url).headers['allow'] + "\n")
+        	print "Metodos http: " + requests.options(url).headers['allow'] + "\n"
+        except Exception as e:
+        	print "No hay metodos" + "\n"
+    if opts.serverversion:
+        if opts.reporte:
+        	reporte.write("URL del servidor:" + opts.serverversion  + "\n")
+        print "URL de servidor:" + opts.server  + "\n"
+    if opts.busqueda:
+        implementar_busqueda(opts,url)
+    if opts.tor:
+        if opts.user:
+        	if opts.password:
+        		peticion_tor(opts,url)
         	else:
-        		print "Especifique contraseña y usuario para usar tor" + "\n"
-        if opts.correo:
-        	f1=open('archivo.txt','w')
-        	f1.write(gethtml(url))
-        	f1.close()
-        	f1=open('archivo.txt','r')
-        	cont=0
-        	for a in f1.readlines():
-        		if opts.verbose:
-        			print a
-        		var = re.findall('[a-zA-Z_\.]+@[a-zA-Z\.]+',a)
-        		if var!= []:
-	        		if opts.reporte:
-	        			reporte.write("Correo: " + var[0] + "\n")
-        			cont=1
-        			print "Correo: " + var[0] + "\n"
-        	if(cont==0):
-        		print "No hay correos" + "\n"
-        	f1.close()
-        if opts.cabeceras:
-        	try:
-        		if opts.reporte:
-        			reporte.write("Version Servidor: " + get(url).headers['server'] + "\n")
-        		print "Version Servidor: " + get(url).headers['server'] + "\n"
-        	except Exception as e:
-        		print "No se encuentra la version del servidor" + "\n"
-        	try:
-        		if opts.reporte:
-        			reporte.write("Version PHP: " + get(url).headers['x-powered-by'] + "\n")
-        		print "Version PHP: " + get(url).headers['x-powered-by'] + "\n"
-        	except Exception as e:
-        		print "No se encuentra version de PHP" + "\n"
-    except Exception as e:
-        printError('Error en reportes')
+        		print "Especifique contraseña y usuario para usar tor"
+        else:
+        	print "Especifique contraseña y usuario para usar tor" + "\n"
+     if opts.correo:
+        f1=open('archivo.txt','w')
+        f1.write(gethtml(url))
+        f1.close()
+        f1=open('archivo.txt','r')
+        cont=0
+        for a in f1.readlines():
+        	if opts.verbose:
+        		print a
+        	var = re.findall('[a-zA-Z_\.]+@[a-zA-Z\.]+',a)
+        	if var!= []:
+	        	if opts.reporte:
+	        		reporte.write("Correo: " + var[0] + "\n")
+        		cont=1
+        		print "Correo: " + var[0] + "\n"
+        if(cont==0):
+        	print "No hay correos" + "\n"
+        f1.close()
+    if opts.cabeceras:
+        try:
+        	if opts.reporte:
+        		reporte.write("Version Servidor: " + get(url).headers['server'] + "\n")
+        	print "Version Servidor: " + get(url).headers['server'] + "\n"
+        except Exception as e:
+        	print "No se encuentra la version del servidor" + "\n"
+        try:
+        	if opts.reporte:
+        		reporte.write("Version PHP: " + get(url).headers['x-powered-by'] + "\n")
+        	print "Version PHP: " + get(url).headers['x-powered-by'] + "\n"
+        except Exception as e:
+        	print "No se encuentra version de PHP" + "\n"
+except Exception as e:
+    printError('Error en reportes')
 reporte.close()
-
-
 
 def makeRequest(host, user, password):
     """
