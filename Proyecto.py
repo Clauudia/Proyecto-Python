@@ -30,12 +30,12 @@ def addOptions():
     opts,args = parser.parse_args()
     return opts
 
-def lee_configuracion(archivo):
+def lee_configuracion(archivo, opts):
 """
 Método para leer configuraciones desde un archivo de texto
 y pasarlas a opciones [argumentos] de la función
 Recibe:
-UN archivo de texto
+UN archivo de texto y las opciones
 """
 	with open(archivo,'r') as configuraciones:
 		for linea in configuraciones.readlines():
@@ -61,7 +61,7 @@ UN archivo de texto
 			elif (opcion == "tor" or opcion == "t"):
 				phpversion.default = (x: if x == True then x)
 
-def obten_version_servidor(options,host,user):
+def obten_version_servidor(opts,host,user):
 """ 
 Función para obtener la versión del servidor web
 Recibe:
@@ -82,7 +82,7 @@ La version del servidor web
     else:
         pass
 
-def obten_version_php(options,host,user):
+def obten_version_php(opts,host,user):
 """ 
 Función para obtener la versión de php
 Recibe:
@@ -101,7 +101,7 @@ La version de php
         except ConnectionError:
             print('Error en la conexion para obtener la version de php')
 
-def determina_metodos(options, host, user):
+def determina_metodos(opts, host, user):
 """
 Función para determinar los métodos http habilitados en el servidor
 Recibe:
@@ -123,7 +123,7 @@ if options.metodos != None:
             print('Error en la conexion para obtener los métodos habilitados')
 
 
-def obtener_cms(options, host, user):
+def obtener_cms(opts, host, user):
 """
 Función para determinar los cms
 Recibe:
@@ -144,7 +144,7 @@ if options.cms != None:
         except ConnectionError:
             print('Error en la conexion para obtener los cms')
 
-def extraer_correos(options, host, user):
+def extraer_correos(opts, url):
 """
 Función para extraer correos del servidor
 Recibe:
@@ -154,18 +154,16 @@ una lista con los correos encontrados.
 """
 if options.correos != None:
         try:
-            correo=get(host,headers=user)
-            try:
-            	listac = []
-                for c in listac.headers['r"[a-zA-Z0-9] + (?:[\.\_-]?[a-zA-Z0-9]+)*@(?:[a-z]+\.)+[a-z]+"']:
-                	listam.append(c)
-                print "correos:",listacms
+            pagina = urllib.request.urlopen(url)
+    		exp = re.compile(r'[-a-z0-9._]+@([-a-z0-9]+)(\.[-a-z0-9]+)+', re.IGNORECASE
+    		correo = reg_ex.search_all(page)
+                print "correos:",correo.group()
             except:
                 print('No están disponibles los correos')
         except ConnectionError:
             print('Error en la conexion para obtener los correos')	
 
-def buscar_archivos(options, host, user):
+def buscar_archivos(opts, host, user):
 """
 Función para extraer correos del servidor
 Recibe:
