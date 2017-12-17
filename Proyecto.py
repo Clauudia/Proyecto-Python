@@ -26,6 +26,7 @@ def addOptions():
     parser.add_option('-cs', '--correos' dest='correos' default=None, help='Habilita el método para obtener los correos de la página.')
     parser.add_option('-b', '--busqueda', dest='busqueda', default=None, help='Habilita el método para la búqueda de archivos/directorios en el servidor.')
     parser.add_option('-t', '--tor', dest='tor', default=None, help='Habilita el método para enviar peticiones a través de tor.')
+    parser.add_option('-conf', '--configuracion', dest='configuración', default=None, help='Habilita la opción para pasar banderas a través de un archivo de configuración')
     opts,args = parser.parse_args()
     return opts
 
@@ -100,7 +101,7 @@ La version de php
         except ConnectionError:
             print('Error en la conexion para obtener la version de php')
 
-def determina_metodos(url):
+def determina_metodos(options, host, user):
 """
 Función para determinar los métodos http habilitados en el servidor
 Recibe:
@@ -108,39 +109,61 @@ la url a analizar
 Regresa:
 una lista con los métodos habilitados
 """
-	conexion = client.HTTPConnection(url)
-	conexion.request("GET",)
-	respuesta = conexion.getresponse()
-	for linea in respuesta.readlines():
-		if 
+if options.metodos != None:
+        try:
+            metodo=get(host,headers=user)
+            try:
+            	listam = []
+                for metods in metodo.headers['']:
+                	listam.append(metods)
+                print "Métodos habilitados:",listam
+            except:
+                print('No están disponibles los métodos habilitados')
+        except ConnectionError:
+            print('Error en la conexion para obtener los métodos habilitados')
+
 
 def obtener_cms(options, host, user):
 """
-Función para determinar los métodos http habilitados en el servidor
+Función para determinar los cms
 Recibe:
-la url a analizar
+la opción, el host y el usuario
 Regresa:
-una lista con los métodos habilitados
+una lista con los cms
 """
-	conexion = client.HTTPConnection(url)
-	conexion.request("GET",)
-	respuesta = conexion.getresponse()
-	for linea in respuesta.readlines():
-		if 
+if options.cms != None:
+        try:
+            cmss=get(host,headers=user)
+            try:
+            	listacms = []
+                for c in cmss.headers['generator']:
+                	listam.append(c)
+                print "cms:",listacms
+            except:
+                print('No están disponibles los cms')
+        except ConnectionError:
+            print('Error en la conexion para obtener los cms')
 
 def extraer_correos(options, host, user):
 """
 Función para extraer correos del servidor
 Recibe:
-la url a analizar
+la opción, el host y el usuario
 Regresa:
 una lista con los correos encontrados.
 """
-	conexion = client.HTTPConnection(url)
-	conexion.request("GET",)
-	respuesta = conexion.getresponse()
-	for linea in respuesta.readlines():
-		if 
+if options.correos != None:
+        try:
+            correo=get(host,headers=user)
+            try:
+            	listac = []
+                for c in listac.headers['r"[a-zA-Z0-9] + (?:[\.\_-]?[a-zA-Z0-9]+)*@(?:[a-z]+\.)+[a-z]+"']:
+                	listam.append(c)
+                print "correos:",listacms
+            except:
+                print('No están disponibles los correos')
+        except ConnectionError:
+            print('Error en la conexion para obtener los correos')	
 
 def buscar_archivos(options, host, user):
 """
@@ -150,11 +173,7 @@ la url a analizar
 Regresa:
 una lista con los correos encontrados.
 """
-	conexion = client.HTTPConnection(url)
-	conexion.request("GET",)
-	respuesta = conexion.getresponse()
-	for linea in respuesta.readlines():
-		if 
+
 
 def genera_reporte(archivo):
 """
